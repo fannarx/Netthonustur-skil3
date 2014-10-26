@@ -2,5 +2,6 @@
 js/node_modules
 
 
-# log files
+# files
 npm-debug.log
+python/.venv

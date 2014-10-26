@@ -1,0 +1,4 @@
+python-kodemon==0.0.1
+requests==2.4.1
+termcolor==1.1.0
+wsgiref==0.1.2
