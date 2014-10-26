@@ -1,0 +1,17 @@
+{
+  "name": "kodemon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "udpServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hjalti",
+  "license": "HES",
+  "dependencies": {
+    "elasticsearch": "^2.4.3",
+    "mongoose": "^3.8.18",
+    "nodemon": "^1.2.1",
+    "slugify": "^0.1.0"
+  }
+}
