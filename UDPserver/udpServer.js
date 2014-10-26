@@ -49,8 +49,7 @@ server.on("message", function(msg, rinfo){
 
 function sendToElasticsearch(data){
  client.index({
-  	index: 'kodemon',
-	type: 'Func',
+  	type: 'Func',
 	body: data
   }, function (error, res) {
   });

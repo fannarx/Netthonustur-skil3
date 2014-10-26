@@ -2,9 +2,14 @@ var express 	= require('express'),
 	kodemon 	= require('./modules').KodeMon, 
 	mongoose 	= require('mongoose'),
 	bodyParser 	= require('body-parser'),
-	//eSearch		= require('./modules/elastic');
+	elastic 	= require('elasticsearch');
+ 	app 		= express();
 
-app = express();
+// elastic search client fierd up.
+var esClient = new elastic.Client({
+		host: 'localhost:9200',
+		log: 'trace'
+	});
 
 //parse application/x-www-from-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
@@ -66,6 +71,28 @@ app.delete('/api/kodemon/delete', function(req, res){
 		}
 	});
 });
+
+// Route for searching.
+app.post('/api/search/:key', function(req, res){
+	var query = req.params.key;	
+	esClient.search({
+			index: "kodemon",
+			type: "func",
+			body: { 
+				query: {
+					match: {
+						key: query
+					}
+				}
+			}
+		}).then(function(body){
+			res.status(201).json(body);
+		},
+		function (error){
+			res.status(404).send('Nothing found');
+		});	
+});
+
 /*
 // Route for searching - still need to implement
 app.post('/api/search', function(req, res){

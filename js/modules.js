@@ -1,4 +1,6 @@
-var mongoose = require('mongoose');
+var mongoose 		= require('mongoose'),
+	elasticsearch 	= require('elasticsearch'),
+	client			= new elasticsearch.Client( {host: 'localhost:9200'} );
 
 var kodeMonSchema = new mongoose.Schema({
   execution_time: 	{type: Number, required: true},
@@ -7,7 +9,22 @@ var kodeMonSchema = new mongoose.Schema({
   key: 				{type: String}
 });
 
-// kodeMonSchema.post('save')
+kodeMonSchema.post('save' , function(data){
+	client.index({
+	  	index: 'kodemon',
+		type: 'func',
+		id: String(data._id),
+		body: {
+			key: data.key,
+			timestamp: data.timestamp
+		}
+	  }, function (error, res) {
+	  	if(error)
+	  		console.log(error);
+	  	if(res)
+	  		console.log(res);
+  });
+});
 
 var KodeMon = mongoose.model('KodeMon', kodeMonSchema);
 
