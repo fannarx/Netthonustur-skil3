@@ -1,2 +1,6 @@
+# directories
+js/node_modules
 
-ls/node_modules
+
+# log files
+npm-debug.log
