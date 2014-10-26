@@ -1,9 +1,4 @@
-var mongoose = require('mongoose'),
-elasticsearch = require('elasticsearch');
-
-var client = new elasticsearch.Client({
-  host: 'localhost:9200'
-});
+var mongoose = require('mongoose');
 
 var kodeMonSchema = new mongoose.Schema({
   execution_time: 	{type: Number, required: true},

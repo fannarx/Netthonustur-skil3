@@ -3,6 +3,7 @@
 */
 var dgram 			= require("dgram");
 var elasticsearch 	= require('elasticsearch');
+var startDoingstuff = require('./elastic');
 
 /*
 	# 	Elasticsearch config.
@@ -30,7 +31,7 @@ client.ping({
 */
 
 client.search({
-	q: 'cinema'
+	q: 'Test'
 }).then(function (body) {
 	var hits = body.hits.hits;
 	console.log(body.hits.hits);
@@ -60,5 +61,8 @@ server.on('listening', function(){
   console.log('hostname: ' + server.address().address);
   console.log('port: ' + server.address().port);
 });
+
+startDoingstuff.start();
+startDoingstuff
 
 server.bind(4000);

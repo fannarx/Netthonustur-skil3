@@ -1,7 +1,8 @@
-var express = require('express'),
-	kodemon = require('./modules').KodeMon, 
-	mongoose = require('mongoose'),
-	bodyParser = require('body-parser');
+var express 	= require('express'),
+	kodemon 	= require('./modules').KodeMon, 
+	mongoose 	= require('mongoose'),
+	bodyParser 	= require('body-parser'),
+	//eSearch		= require('./modules/elastic');
 
 app = express();
 
@@ -85,6 +86,8 @@ app.post('/api/search', function(req, res){
 	});
 });
 */
+
+
 // port used to comunicate - routes come to this port
 var port = 5000;
 app.listen(port, function(){
