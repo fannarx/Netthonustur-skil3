@@ -30,9 +30,26 @@ mongoose.connection.on('disconnected', connectMongo);
 // starts the connection the first time this file is ran.	
 connectMongo();
 
+/// routes to elasticSearch
+app.get('/api/es/kodemon', function(req, res){
+	console.log('calling api/es/kodemon');
+	esClient.search({
+		index: 'kodemon',
+	}).then(function (resp) {
+	    var hits = resp.hits.hits;
+	    res.json(hits);
+	}, function (err) {
+	    console.log(err.message);
+	});
+});
+
+
+
+/// routes to database
+
 // route to get all blogs
-app.get('/api/kodemon', function(req, res){
-	console.log('calling api/kodemon');
+app.get('/api/db/kodemon', function(req, res){
+	console.log('calling api/db/kodemon');
 	kodemon.find(function(err, searchResult){
 		if (err) {
 			res.status(503).send('Unable to find results');

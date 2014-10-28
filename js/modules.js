@@ -10,14 +10,12 @@ var kodeMonSchema = new mongoose.Schema({
 });
 
 kodeMonSchema.post('save' , function(data){
+	console.log('Writing to elasticsearch: ')
 	client.index({
 	  	index: 'kodemon',
 		type: 'func',
 		id: String(data._id),
-		body: {
-			key: data.key,
-			timestamp: data.timestamp
-		}
+		body: data
 	  }, function (error, res) {
 	  	if(error)
 	  		console.log(error);
