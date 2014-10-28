@@ -3,6 +3,7 @@ var express 	= require('express'),
 	mongoose 	= require('mongoose'),
 	bodyParser 	= require('body-parser'),
 	elastic 	= require('elasticsearch');
+ 	cors		= require('cors');
  	app 		= express();
 
 // elastic search client fierd up.
@@ -13,7 +14,7 @@ var esClient = new elastic.Client({
 
 //parse application/x-www-from-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
-
+app.use(cors());
 // parse application/jason
 app.use(bodyParser.json());
 
@@ -73,7 +74,7 @@ app.delete('/api/kodemon/delete', function(req, res){
 });
 
 // Route for searching.
-app.post('/api/search/:key', function(req, res){
+app.post('/api/search/:key', function(req, res, next){
 	var query = req.params.key;	
 	esClient.search({
 			index: "kodemon",
@@ -86,7 +87,7 @@ app.post('/api/search/:key', function(req, res){
 				}
 			}
 		}).then(function(body){
-			res.status(201).json(body);
+			res.status(201).json(body.hits.hits);
 		},
 		function (error){
 			res.status(404).send('Nothing found');
