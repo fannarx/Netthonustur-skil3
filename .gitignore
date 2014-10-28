@@ -5,3 +5,5 @@ js/node_modules
 # files
 npm-debug.log
 python/.venv
+Procfile
+elasticsearch
