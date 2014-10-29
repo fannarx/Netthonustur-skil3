@@ -16,10 +16,12 @@ angular.module('frontendApp')
     	console.log('RESP: /kodemon');
     });
 
-    $http.post('http://localhost:5000/api/es/kodemon/key.py').success(function  (data) {
-    	console.log('POST: /kodemon/key.py');
+    $http.post('http://localhost:5000/api/es/kodemon/key.py/timerange', {startTime: '2014-10-29T18:44:39', endTime: ''}).success(function  (data) {
+    	console.log('POST: /kodemon/key.py/timerange');
     	console.log(data);
-    	console.log('RESP: /kodemon/key.py');
+    	console.log('RESP: /kodemon/key.py/timerange');
     });
+
+    
 
   });

@@ -112,12 +112,11 @@ app.get('/api/es/:customer', function(req, res){
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/es/:customer/:func', function(req, res, next){
+app.post('/api/es/:customer/:func', function(req, res){
 	var customer = req.params.customer,
 		func 	 = req.params.func;
 	esClient.search({
 			index: customer
-			//type: func
 		}).then(function(body){
 			res.status(201).json(body.hits.hits);
 		},
@@ -125,6 +124,31 @@ app.post('/api/es/:customer/:func', function(req, res, next){
 			res.status(error.status).send('Nothing found');
 		});	
 });
+
+//	Route: /api/es/kodemon/:project/:function/timerange
+//	Expected Results: 		
+//		Every document related to this selected function from the selected
+//		project filtered by time condition.
+
+app.post('/api/es/:customer/:func/timerange', function(req, res){
+	var customer = req.params.customer,
+		func 	 = req.params.func,
+		start 	 = req.query.startTime,
+		end 	 = req.query.endTime;
+		esClient.search({
+			index: customer,
+			range: {
+				startTime: start,
+				endTime: end
+			}
+		}).then(function(body){
+			res.status(201).json(body.hits.hits);
+		},
+		function (error){
+			res.status(error.status).send('Nothing found');
+		});
+});
+
 
 // #######################################
 
