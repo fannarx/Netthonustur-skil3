@@ -116,7 +116,8 @@ app.post('/api/es/:customer/:func', function(req, res){
 	var customer = req.params.customer,
 		func 	 = req.params.func;
 	esClient.search({
-			index: customer
+			index: customer,
+			type: func
 		}).then(function(body){
 			res.status(201).json(body.hits.hits);
 		},
@@ -133,15 +134,24 @@ app.post('/api/es/:customer/:func', function(req, res){
 app.post('/api/es/:customer/:func/timerange', function(req, res){
 	var customer = req.params.customer,
 		func 	 = req.params.func,
-		start 	 = req.query.startTime,
-		end 	 = req.query.endTime;
+		start 	 = req.body.startTime,
+		end 	 = req.body.endTime;
+		console.log(start);
 		esClient.search({
 			index: customer,
-			range: {
-				startTime: start,
-				endTime: end
+			body: {
+				query: {
+					range: {
+						timestamp: {
+							from: start,
+							to: end
+						}
+					}
+				}
 			}
 		}).then(function(body){
+			console.log("HERE I AM !");
+			console.log(start);
 			res.status(201).json(body.hits.hits);
 		},
 		function (error){
