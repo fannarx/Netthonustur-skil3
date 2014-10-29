@@ -36,7 +36,6 @@ server.on("message", function (msg, rinfo){
   // To change UnixDate to date-time
   jsonMsg.timestamp = new Date(jsonMsg.timestamp*1000); 
   var kodeMonMsg = new kodeMon(jsonMsg);
-  console.log('kodeMonMsg: '+kodeMonMsg);
   kodeMonMsg.save(function(err, message){
     if(err){
       console.log('ERROR: unable to insert kodeMonMsg to db: ' + err);

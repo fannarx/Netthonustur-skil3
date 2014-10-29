@@ -1,11 +1,13 @@
 var elasticsearch 	= require('elasticsearch');
 
+var eSearch = {};
 var client = new elasticsearch.Client({
 		host: 'localhost:9200',
 		log: 'trace'
 	});
 console.log('Started Client');
 
+eSearch.ping
 function ping() {
 	console.log('Running ping.');
 	client.ping({
@@ -20,7 +22,6 @@ function ping() {
 	});
 };
 
-var eSearch = client.model('eSearch', client);
 
 module.exports = {'eSearch': eSearch};
 

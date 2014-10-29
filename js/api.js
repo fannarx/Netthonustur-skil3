@@ -30,22 +30,8 @@ mongoose.connection.on('disconnected', connectMongo);
 // starts the connection the first time this file is ran.	
 connectMongo();
 
-/// routes to elasticSearch
-app.get('/api/es/kodemon', function(req, res){
-	console.log('calling api/es/kodemon');
-	esClient.search({
-		index: 'kodemon',
-	}).then(function (resp) {
-	    var hits = resp.hits.hits;
-	    res.json(hits);
-	}, function (err) {
-	    console.log(err.message);
-	});
-});
-
-
-
-/// routes to database
+/// ######## Routes to database ##########
+/// ######################################
 
 // route to get all blogs
 app.get('/api/db/kodemon', function(req, res){
@@ -90,26 +76,58 @@ app.delete('/api/kodemon/delete', function(req, res){
 	});
 });
 
-// Route for searching.
-app.post('/api/search/:key', function(req, res, next){
-	var query = req.params.key;	
+// ###### Routes to database end #########
+
+// #######################################
+// ###### Routes to elasticSearch ########
+
+/* Routes that we need to implement 
+	/api/es/kodemon/:project 
+	/api/es/kodemon/:project/:function
+	/api/es/kodemon/:project/:function/single
+	/api/es/kodemon/:project/:function/time
+	/api/es/kodemon/:project/:function/time/:range
+													*/
+
+//	Route: /api/es/kodemon/:project 
+//	Expected results: 	
+//			Every document related to the project name
+//		 	grouped by function.
+
+app.get('/api/es/:customer', function(req, res){
 	esClient.search({
-			index: "kodemon",
-			type: "func",
-			body: { 
-				query: {
-					match: {
-						key: query
-					}
-				}
-			}
+		index: req.params.customer
+	}).then(function (resp) {
+	    var hits = resp.hits.hits;
+	    res.status(201).json(hits);
+	}, function (err) {
+    	// elasticsearch error message has a status attrib.
+    	// so it is not needed to do a manual error search.
+    	res.status(err.status).json(err);
+	});
+});
+
+//	Route: /api/es/kodemon/:project/:function
+//	Expected Results: 		
+//		Every document related to this selected function from the selected
+//		project grouped by the function name.
+
+app.post('/api/es/:customer/:func', function(req, res, next){
+	var customer = req.params.customer,
+		func 	 = req.params.func;
+	esClient.search({
+			index: customer
+			//type: func
 		}).then(function(body){
 			res.status(201).json(body.hits.hits);
 		},
 		function (error){
-			res.status(404).send('Nothing found');
+			res.status(error.status).send('Nothing found');
 		});	
 });
+
+// #######################################
+
 
 /*
 // Route for searching - still need to implement

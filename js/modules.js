@@ -6,7 +6,10 @@ var kodeMonSchema = new mongoose.Schema({
   execution_time: 	{type: Number, required: true},
   timestamp: 		{type: Date},
   token: 			{type: String},
-  key: 				{type: String}
+  key: 				{type: String},
+  function_name:	{type: String},
+  file_path:		{type: String}
+
 });
 
 kodeMonSchema.post('save' , function(data){
@@ -20,7 +23,7 @@ kodeMonSchema.post('save' , function(data){
 	  	if(error)
 	  		console.log(error);
 	  	if(res)
-	  		console.log(res);
+	  		console.log("Response Written to EleasticSearch "+ data._id);
   });
 });
 
