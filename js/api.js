@@ -94,89 +94,33 @@ app.delete('/api/kodemon/delete', function(req, res){
 //			Every document related to the project name
 //		 	grouped by function.
 
-app.post('/api/es/:index', function(req, res){
-	var key = req.body.field;
-	esClient.search({
-		index: req.params.index,
-		body:{
-		aggs: {
-			keys:{
-			group_by_field: {
-				terms:{
-					field: key
-				}
-			}
-			}
-			}
-		}
-	}).then(function (resp) {
-	    var hits = resp.hits.hits;
-	    console.log(resp)
-	    //var keys = resp.aggregations.keys.buckets;
-	    res.status(201).json(hits);
-	}, function (err) {
-		console.log(err);
-    	// elasticsearch error message has a status attrib.
-    	// so it is not needed to do a manual error search.
-    	res.status(err.status).json(err);
-	});
+app.get('/api/es/:index', function(req, res){
+		var index = req.params.index;
+		esClient.search({
+                'index': index,
+                'body': {
+                	'aggs': {
+                		'group_by_functions': {
+                			'terms': {
+                				'field': 'function_name'
+                			}
+                		}
+                	}
+                }
+		}).then(function(body){
+			res.status(200).json(body.aggregations.group_by_functions.buckets);
+			},
+		function (error){
+			res.status(error.status).send('Nothing found');
+		});
 });
+
+
 
 //	Route: /api/es/kodemon/:project/:function
 //	Expected Results: 		
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
-
-app.get('/api/es/:index/:func', function(req, res){
-	var index = req.params.index,
-		func 	 = req.params.func;
-	esClient.search({
-			index: index,
-			type: func
-		}).then(function(body){
-			res.status(201).json(body.hits.hits);
-		},
-		function (error){
-			res.status(error.status).send('Nothing found');
-		});	
-});
-
-//	Route: /api/es/kodemon/:project/:function/timerange
-//	Expected Results: 		
-//		Every document related to this selected function from the selected
-//		project filtered by time condition.
-
-// app.post('/api/es/:index/:func/timerange', function(req, res){
-// 	var index = req.params.index,
-// 		func 	 = req.params.func,
-// 		start 	 = req.body.startTime,
-// 		end 	 = req.body.endTime,
-// 		fun 	 = req.body.fu;
-// 		esClient.search({
-// 				"index": index,
-// 				"body":{
-// 					"query": {
-// 						"range":{
-// 								"timestamp":{
-// 								"from": start,
-// 								"to": end
-// 								}
-// 							}
-// 						},
-// 					"query":{
-// 						"term": {"key": "sad"}
-// 					}
-// 					}
-// 		}).then(function(body){
-// 			console.log("HERE I AM !");
-// 			console.log(start);
-// 			res.status(201).json(body.hits.hits);
-// 		},
-// 		function (error){
-// 			res.status(error.status).send('Nothing found');
-// 		});
-// });
-
 
 app.post('/api/es/:index/:func/timerange', function(req, res){
 	var index = req.params.index,
@@ -185,31 +129,27 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
 		esClient.search({
-                index: "kodemon",
+                index: index,
                 body: {
                 "query": {
-                	"match" : {"function_name": "funny"}
+                	"match" : {"function_name": fun}
                 },	
                 "aggs" : {
                         "keys" : {
                                 "range" : {
                                 "field" : "timestamp",
                                 "ranges" :[
-                    						{ "from" : "2013-06-02", "to" : "2014-10-29" }
+                    						{ "from" : start, "to" : end }
                                           ]
 
                                 }            
-                        }
- 
+                    	    }
                         }
                 }
 
 		}).then(function(body){
-			console.log("HERE I AM !");
-			console.log(start);
-			res.status(200).json(body);
-			//res.status(200).json(body.aggregations.keys.buckets);
-		},
+			res.status(200).json(body.hits.hits);
+			},
 		function (error){
 			res.status(error.status).send('Nothing found');
 		});

@@ -1,5 +1,5 @@
 <div>
-  Herpderp!
+  	
   <ul ng-repeat="k in data">
     <li>{{k._source.key}}</li>
   </ul>
@@ -9,6 +9,14 @@
 <div>
 	<h1>Listi af öllum skrám</h1>
 	<ul ng-repeat="item in project">
-		<li>{{item._source.key}}</li>
+		<li>Function name: {{item.key}} , called {{item.doc_count}}</li>
+	</ul>
+</div>
+
+
+<div>
+	<h1>Listi af öllum tímum fyrir Funny.</h1>
+	<ul ng-repeat="item in timerange">
+		<li>{{item._source.timestamp}}</li>
 	</ul>
 </div>
