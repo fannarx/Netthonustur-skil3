@@ -155,13 +155,28 @@ app.get('/api/ess/kodemon', function(req, res){
 //			Every document related to the project name
 //		 	grouped by function.
 
-app.get('/api/es/:customer', function(req, res){
+app.post('/api/es/:index', function(req, res){
+	var key = req.body.field;
 	esClient.search({
-		index: req.params.customer
+		index: req.params.index,
+		body:{
+		aggs: {
+			keys:{
+			group_by_field: {
+				terms:{
+					field: key
+				}
+			}
+			}
+			}
+		}
 	}).then(function (resp) {
 	    var hits = resp.hits.hits;
+	    console.log(resp)
+	    //var keys = resp.aggregations.keys.buckets;
 	    res.status(201).json(hits);
 	}, function (err) {
+		console.log(err);
     	// elasticsearch error message has a status attrib.
     	// so it is not needed to do a manual error search.
     	res.status(err.status).json(err);
@@ -173,11 +188,11 @@ app.get('/api/es/:customer', function(req, res){
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/es/:customer/:func', function(req, res){
-	var customer = req.params.customer,
+app.get('/api/es/:index/:func', function(req, res){
+	var index = req.params.index,
 		func 	 = req.params.func;
 	esClient.search({
-			index: customer,
+			index: index,
 			type: func
 		}).then(function(body){
 			res.status(201).json(body.hits.hits);
@@ -192,34 +207,74 @@ app.post('/api/es/:customer/:func', function(req, res){
 //		Every document related to this selected function from the selected
 //		project filtered by time condition.
 
-app.post('/api/es/:customer/:func/timerange', function(req, res){
-	var customer = req.params.customer,
+// app.post('/api/es/:index/:func/timerange', function(req, res){
+// 	var index = req.params.index,
+// 		func 	 = req.params.func,
+// 		start 	 = req.body.startTime,
+// 		end 	 = req.body.endTime,
+// 		fun 	 = req.body.fu;
+// 		esClient.search({
+// 				"index": index,
+// 				"body":{
+// 					"query": {
+// 						"range":{
+// 								"timestamp":{
+// 								"from": start,
+// 								"to": end
+// 								}
+// 							}
+// 						},
+// 					"query":{
+// 						"term": {"key": "sad"}
+// 					}
+// 					}
+// 		}).then(function(body){
+// 			console.log("HERE I AM !");
+// 			console.log(start);
+// 			res.status(201).json(body.hits.hits);
+// 		},
+// 		function (error){
+// 			res.status(error.status).send('Nothing found');
+// 		});
+// });
+
+
+app.post('/api/es/:index/:func/timerange', function(req, res){
+	var index = req.params.index,
 		func 	 = req.params.func,
 		start 	 = req.body.startTime,
-		end 	 = req.body.endTime;
-		console.log(start);
+		end 	 = req.body.endTime,
+		fun 	 = req.body.fu;
 		esClient.search({
-			index: customer,
-			body: {
-				query: {
-					range: {
-						timestamp: {
-							from: start,
-							to: end
-						}
-					}
-				}
-			}
+                index: "kodemon",
+                body: {
+                "query": {
+                	"match" : {"function_name": "funny"}
+                },	
+                "aggs" : {
+                        "keys" : {
+                                "range" : {
+                                "field" : "timestamp",
+                                "ranges" :[
+                    						{ "from" : "2013-06-02", "to" : "2014-10-29" }
+                                          ]
+
+                                }            
+                        }
+ 
+                        }
+                }
+
 		}).then(function(body){
 			console.log("HERE I AM !");
 			console.log(start);
-			res.status(201).json(body.hits.hits);
+			res.status(200).json(body);
+			//res.status(200).json(body.aggregations.keys.buckets);
 		},
 		function (error){
 			res.status(error.status).send('Nothing found');
 		});
 });
-
 
 // #######################################
 
