@@ -150,10 +150,8 @@ app.get('/api/ess/kodemon', function(req, res){
 });
 
 
-//	Route: /api/es/kodemon/:project 
-//	Expected results: 	
-//			Every document related to the project name
-//		 	grouped by function.
+//	Route: /api/es/kodemon/ 
+//	Expected results: 	Every document related to this index.
 
 app.get('/api/es/:index', function(req, res){
 		var index = req.params.index;
@@ -161,15 +159,15 @@ app.get('/api/es/:index', function(req, res){
                 'index': index,
                 'body': {
                 	'aggs': {
-                		'group_by_functions': {
+                		'group_by_files': {
                 			'terms': {
-                				'field': 'function_name'
+                				'field': 'file_path'
                 			}
                 		}
                 	}
                 }
 		}).then(function(body){
-			res.status(200).json(body.aggregations.group_by_functions.buckets);
+			res.status(200).json(body.aggregations.group_by_files.buckets);
 			},
 		function (error){
 			res.status(error.status).send('Nothing found');
@@ -178,33 +176,94 @@ app.get('/api/es/:index', function(req, res){
 
 
 
+//	Route: /api/es/kodemon/:file 
+//	Expected results: 	Every function and how often it has been called from this file
+
+app.get('/api/es/:index/:file', function(req, res){
+		var index = req.params.index;
+		var file  = req.params.file;
+		esClient.search({
+                'index': index,
+                'body':{
+	                'query': {
+	                	'filtered':{
+	                		'query': {
+	                			'match': {'file_path': file}
+	                		}
+	                		
+	                	}
+	                },
+	                'aggs': {
+	                			'group_by_functions':{
+	                				'terms':{
+	                					'field': 'function_name'
+	                				}
+	                			}
+	                		}
+                }                
+		}).then(function(body){
+			res.status(200).json(body);
+			},
+		function (error){
+			res.status(error.status).send('Nothing found');
+		});
+});
+
+
+//	Route: /api/es/kodemon/:file 
+//	Expected results: 	Returns every logged call to this function.
+
+app.get('/api/es/:index/:file/:func', function(req, res){
+		var index = req.params.index;
+		var func  = req.params.func;
+		esClient.search({
+                'index': index,
+                'body':{
+	                'query': {
+	                	'filtered':{
+	                		'query': {
+	                			'match': {'function_name': func}
+	                		}
+	                		
+	                	}
+	                }
+                }            
+		}).then(function(body){
+			res.status(200).json(body);
+			},
+		function (error){
+			res.status(error.status).send('Nothing found');
+		});
+});
+
+
 //	Route: /api/es/kodemon/:project/:function
 //	Expected Results: 		
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/es/:index/:func/timerange', function(req, res){
+app.post('/api/ele/:index/:func/timerange', function(req, res){
 	var index = req.params.index,
 		func 	 = req.params.func,
 		start 	 = req.body.startTime,
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
 		esClient.search({
-                "index": index,
-                "body":{
-	                "query": {
-	                	"filtered":{
-	                		"query": {
-	                			"match": {"function_name": fun}
+                'index': index,
+                'body':{
+	                'query': {
+	                	'filtered':{
+	                		'query': {
+	                			'match': {'function_name': fun}
 	                		},
-	                		"filter": {
-	                			"range":{ "timestamp": { "from": start, "to": end} }
+	                		'filter': {
+	                			'range':{ 'timestamp': { 'from': start, 'to': end} }
 	                		}
 	                	}
 	                }
                 }
 		}).then(function(body){
-			res.status(200).json(body);
+			res.status(200).json(body.hits.hits);
 			},
 		function (error){
 			res.status(error.status).send('Nothing found');
