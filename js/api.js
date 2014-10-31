@@ -190,26 +190,21 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
 		esClient.search({
-                index: index,
-                body: {
-                "query": {
-                	"match" : {"function_name": fun}
-                },	
-                "aggs" : {
-                        "keys" : {
-                                "range" : {
-                                "field" : "timestamp",
-                                "ranges" :[
-                    						{ "from" : start, "to" : end }
-                                          ]
-
-                                }            
-                    	    }
-                        }
+                "index": index,
+                "body":{
+	                "query": {
+	                	"filtered":{
+	                		"query": {
+	                			"match": {"function_name": fun}
+	                		},
+	                		"filter": {
+	                			"range":{ "timestamp": { "from": start, "to": end} }
+	                		}
+	                	}
+	                }
                 }
-
 		}).then(function(body){
-			res.status(200).json(body.hits.hits);
+			res.status(200).json(body);
 			},
 		function (error){
 			res.status(error.status).send('Nothing found');
