@@ -97,7 +97,7 @@ app.delete('/api/kodemon/delete', function(req, res){
 // Route: /api/es/kodemon/
 // Expected results:
 //		Returns a bucket list of all functions 
-app.get('/api/es/kodemon', function(req, res){
+app.get('/api/esss/kodemon', function(req, res){
 	console.log('calling api/db/kodemon');
 	esClient.search({
 		index: "kodemon",
@@ -190,26 +190,21 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
 		esClient.search({
-                index: index,
-                body: {
-                "query": {
-                	"match" : {"function_name": fun}
-                },	
-                "aggs" : {
-                        "keys" : {
-                                "range" : {
-                                "field" : "timestamp",
-                                "ranges" :[
-                    						{ "from" : start, "to" : end }
-                                          ]
-
-                                }            
-                    	    }
-                        }
+                "index": index,
+                "body":{
+	                "query": {
+	                	"filtered":{
+	                		"query": {
+	                			"match": {"function_name": fun}
+	                		},
+	                		"filter": {
+	                			"range":{ "timestamp": { "from": start, "to": end} }
+	                		}
+	                	}
+	                }
                 }
-
 		}).then(function(body){
-			res.status(200).json(body.hits.hits);
+			res.status(200).json(body);
 			},
 		function (error){
 			res.status(error.status).send('Nothing found');
