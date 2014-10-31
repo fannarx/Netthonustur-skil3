@@ -94,61 +94,6 @@ app.delete('/api/kodemon/delete', function(req, res){
 													*/
 
 
-// Route: /api/es/kodemon/
-// Expected results:
-//		Returns a bucket list of all functions 
-app.get('/api/esss/kodemon', function(req, res){
-	console.log('calling api/db/kodemon');
-	esClient.search({
-		index: "kodemon",
-		body: {
-    		"aggs" : {
-        		"keys" : {
-        			"range" : {
-	            		"field" : "timestamp",
-	            		"ranges" :[
-                    { "to" : "2013-06-02" },
-                    { "from" : "2013-06-02", "to" : "2014-10-29" },
-                    { "from" : "2014-10-29" }
-	            			  ]
-	            		
-        			}    				
-    			}
-
-			}
-		}
-		}).then(function(body) {
-			var keys = body.aggregations.keys.buckets;
-//			var keyresp = { "keys": keys };
-			console.log("HERE I AM !");
-			res.status(200).json(body);
-		}, function (err) {
-			res.status(error.status).send('Nothing found');
-		});
-});
-
-
-
-// þetta fall hér fyrir neðan verður hent ___
-app.get('/api/ess/kodemon', function(req, res){
-	console.log('calling api/db/kodemon');
-	esClient.search({
-		body: {
-    		"aggs" : {
-        		"keys" : {
-            		"terms" : { "field" : "key" }
-        			}
-    			}
-			}
-		}).then(function(body) {
-			var keys = body.aggregations.keys.buckets;
-			console.log("HERE I AM !");
-			res.status(200).json(body);
-		}, function (err) {
-			res.status(error.status).send('Nothing found');
-		});
-});
-
 
 //	Route: /api/es/kodemon/:project 
 //	Expected results: 	
