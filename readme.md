@@ -1,4 +1,4 @@
-This program was written on mac oxs.
+### How to install **kodemon**
 
 
 ## What you need to have installed to run the project
