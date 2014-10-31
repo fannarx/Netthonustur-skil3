@@ -25,11 +25,12 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a ng-href="#">Home</a></li>
+          <li><a ng-href="#/about">abút</a></li>
           </ul>
         <h3 class="text-muted">Kodemon <small>the ultimate kodemonitoring system</small></h3>
       </div>
 
-      <div ng-view=""></div>
+      <div class="slide-animation" ng-view="" ng-if="!test"></div>
 
       <div class="footer">
         <p><span class="glyphicon glyphicon-copyright-mark"></span> Fannar Már & Hjalti Erdmann production's</p>
