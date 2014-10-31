@@ -97,7 +97,7 @@ app.delete('/api/kodemon/delete', function(req, res){
 // Route: /api/es/kodemon/
 // Expected results:
 //		Returns a bucket list of all functions 
-app.get('/api/es/kodemon', function(req, res){
+app.get('/api/esss/kodemon', function(req, res){
 	console.log('calling api/db/kodemon');
 	esClient.search({
 		index: "kodemon",
