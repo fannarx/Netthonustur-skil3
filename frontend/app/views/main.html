@@ -1,55 +1,118 @@
 <div>
-  	
-  <ul ng-repeat="k in data">
-    <li>{{k._source.key}}</li>
-  </ul>
+	<h3>Listi af öllum skrám</h3>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>File name</th>
+				<th>Function's</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in project">
+				<td>#</td>
+				<td ng-click="getAllFunctionsByFile(item.key)" >{{item.key}}</td>
+				<td>{{item.doc_count}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div>
+	<h3>Listi af öllum föllum fyrir tiltekna skrá</h3>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Function name</th>
+				<th>Call count</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in functionByFileContainer">
+				<td>#</td>
+				<td ng-click="getAllFunctionCalls(item)">{{item.key}}</td>
+				<td>{{item.doc_count}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 
 
 <div>
-	<h1>Listi af öllum skrám</h1>
-	<ul ng-repeat="item in project">
-		<li ng-click="getFunctionValues(item.key)">Function name: {{item.key}} , called {{item.doc_count}}</li>
-	</ul>
+	<h3>Listi af öllum keyrslutímum fyrir tiltekið fall.</h3>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nafn á skrá. (*)</th>
+				<th>Nafn á falli (*)</th>
+				<th>Byrjun keyrslu</th>
+				<th>Keyrslutími</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in functionCallsContainer">
+				<td>#</td>
+				<td >{{item._source.file_path}}</td>
+				<td>{{item._source.function_name}}</td>
+				<td>{{item._source.timestamp | date:'medium'}}</td>
+				<td>{{item._source.execution_time}}</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 
-<div>
-	<h1>Listi af öllum tímum fyrir {{selectedFunction}}</h1>
-	<ul ng-repeat="item in timerange">
-		<li>StartTime: {{item._source.timestamp}}, ExicutionTime: {{item._source.execution_time}}</li>
-	</ul>
-</div>
 
 <div>
-	<h1>Listi eftir tímabili og falli</h1>
-
+	<h3>Filteraður listi af öllum keyrslum af ákveðnu falli.</h3>
 
 	<div>
 	    <div class="row">
+	    <div class="col-md-12">
+	    	<h4>Dagsetningar val</h4>
+	    	<select ng-model="selectedFunction" ng-options="item.key for item in functionByFileContainer"></select>
+	    </div>
 	        <div class="col-md-6">
+	            <h5>Byrjunar dagsetning</h5>
 	            <p class="input-group">
 	              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 	              <span class="input-group-btn">
 	                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 	              </span>
-	            </p>
+	            </p>	
 	        </div>
+		    <div class="col-md-6">
+		    	<h5>Enda dagsetning</h5>
+		            <p class="input-group">
+		              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+		              <span class="input-group-btn">
+		                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+		              </span>
+		            </p>
+		    </div>
 	    </div>
 	</div>
-
-	<div>
-	    <div class="row">
-	        <div class="col-md-6">
-	            <p class="input-group">
-	              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
-	              <span class="input-group-btn">
-	                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-	              </span>
-	            </p>
-	        </div>
-	    </div>
-	</div>
-
-
+	<button ng-click="getFunctionValuesByTimerange(selectedFunction)">go</button>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nafn á skrá. (*)</th>
+				<th>Nafn á falli (*)</th>
+				<th>Byrjun keyrslu</th>
+				<th>Keyrslutími</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in functionCallsFilteredByFunctionAndTimeContainer">
+				<td>#</td>
+				<td >{{item._source.file_path}}</td>
+				<td>{{item._source.function_name}}</td>
+				<td>{{item._source.timestamp | date:'medium'}}</td>
+				<td>{{item._source.execution_time}}</td>
+			</tr>
+		</tbody>
+	</table>
 
 </div>
