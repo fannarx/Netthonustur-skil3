@@ -125,12 +125,10 @@ app.get('/api/es/:index', function(req, res){
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/ele/:index/timerange', function(req, res){
+app.post('/api/es/:index/timerange', function(req, res){
 	var index 	= req.params.index,
-//		func 	= req.params.func,
 		start 	= req.body.startTime,
-		end 	= req.body.endTime,
-//		fun 	= req.body.fu;
+		end 	= req.body.endTime;
 		esClient.search({
 	        'index': index,
 	        'body':{
@@ -150,6 +148,7 @@ app.post('/api/ele/:index/timerange', function(req, res){
 			res.status(error.status).send('Nothing found');
 	});
 });
+
 
 //	Route: /api/es/kodemon/:file 
 //	Expected results: 	Every function and how often it has been called from this file
@@ -217,9 +216,9 @@ app.get('/api/es/:index/:file/:func', function(req, res){
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/ele/:index/:func/timerange', function(req, res){
+app.post('/api/es/:index/:func/timerange', function(req, res){
 	var index = req.params.index,
-		func 	 = req.params.func,
+//		func 	 = req.params.func,
 		start 	 = req.body.startTime,
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
