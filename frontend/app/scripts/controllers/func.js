@@ -63,10 +63,12 @@ angular.module('frontendApp')
         };
     };
 
+    $scope.$on("$destroy", function(){
+        $interval.cancel(getLatestData);
+    });
 
-$interval(function() {
-        $scope.getNew();
-        }, 3000);
+var getLatestData = $interval(function() { $scope.getNew(); }, 3000);
+
 
 // ##### HIGHCHARTS EXPEREMENT
 
@@ -101,7 +103,7 @@ $interval(function() {
       },
       plotOptions: {
         series: {
-          stacking: 'derp'
+          stacking: 'no'
         }
       }
     },
