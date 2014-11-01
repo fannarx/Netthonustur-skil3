@@ -78,12 +78,13 @@ app.delete('/api/kodemon/delete', function(req, res){
 
 // ###### Routes to database end #########
 
+
+
+
+
+
 // #######################################
 // ###### Routes to elasticSearch ########
-
-
-
-
 
 /* Routes that we need to implement 
 	/api/es/kodemon/:project 
@@ -94,86 +95,67 @@ app.delete('/api/kodemon/delete', function(req, res){
 													*/
 
 
-// Route: /api/es/kodemon/
-// Expected results:
-//		Returns a bucket list of all functions 
-app.get('/api/esss/kodemon', function(req, res){
-	console.log('calling api/db/kodemon');
-	esClient.search({
-		index: "kodemon",
-		body: {
-    		"aggs" : {
-        		"keys" : {
-        			"range" : {
-	            		"field" : "timestamp",
-	            		"ranges" :[
-                    { "to" : "2013-06-02" },
-                    { "from" : "2013-06-02", "to" : "2014-10-29" },
-                    { "from" : "2014-10-29" }
-	            			  ]
-	            		
-        			}    				
-    			}
 
-			}
-		}
-		}).then(function(body) {
-			var keys = body.aggregations.keys.buckets;
-//			var keyresp = { "keys": keys };
-			console.log("HERE I AM !");
-			res.status(200).json(body);
-		}, function (err) {
-			res.status(error.status).send('Nothing found');
-		});
-});
-
-
-
-// þetta fall hér fyrir neðan verður hent ___
-app.get('/api/ess/kodemon', function(req, res){
-	console.log('calling api/db/kodemon');
-	esClient.search({
-		body: {
-    		"aggs" : {
-        		"keys" : {
-            		"terms" : { "field" : "key" }
-        			}
-    			}
-			}
-		}).then(function(body) {
-			var keys = body.aggregations.keys.buckets;
-			console.log("HERE I AM !");
-			res.status(200).json(body);
-		}, function (err) {
-			res.status(error.status).send('Nothing found');
-		});
-});
-
-
-//	Route: /api/es/kodemon/ 
+//	Route: /api/es/:index
 //	Expected results: 	Every document related to this index.
-
 app.get('/api/es/:index', function(req, res){
-		var index = req.params.index;
+	var index = req.params.index;
+	esClient.search({
+            'index': index,
+            'body': {
+            	'aggs': {
+            		'group_by_files': {
+            			'terms': {
+            				'field': 'file_path'
+            			}
+            		}
+            	}
+            }
+	}).then(function(body){
+		res.status(200).json(body.aggregations.group_by_files.buckets);
+		},
+	function (error){
+		res.status(error.status).send('Nothing found');
+	});
+});
+
+
+//	Route: /api/es/kodemon/:project/:function
+//	Expected Results: 		
+//		Every document related to this selected function from the selected
+//		project grouped by the function name.
+
+app.post('/api/es/:index/timerange', function(req, res){
+	console.log('POST: /api/es/:index/timerange, has been called');
+	var index 	= req.params.index,
+		start 	= req.body.startTime,
+		end 	= req.body.endTime;
 		esClient.search({
-                'index': index,
-                'body': {
-                	'aggs': {
-                		'group_by_files': {
-                			'terms': {
-                				'field': 'file_path'
-                			}
-                		}
-                	}
-                }
+	        'index': index,
+	        'body':{
+	            'query': {
+					'range':{ 
+						'timestamp': { 
+							'from': start, 
+							'to': end
+						} 
+					}
+	            },
+	            'aggs': {
+	            	'groupByFiles':{
+	            		'terms':{
+	            			'field': 'file_path'
+	            		}
+	            	}
+	            }
+	        }
 		}).then(function(body){
-			res.status(200).json(body.aggregations.group_by_files.buckets);
-			},
+			res.status(200).json(body);
+		},
 		function (error){
 			res.status(error.status).send('Nothing found');
-		});
+	});
 });
-
 
 
 //	Route: /api/es/kodemon/:file 
@@ -242,32 +224,32 @@ app.get('/api/es/:index/:file/:func', function(req, res){
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
 
-app.post('/api/ele/:index/:func/timerange', function(req, res){
+app.post('/api/es/:index/:func/timerange', function(req, res){
 	var index = req.params.index,
-		func 	 = req.params.func,
+//		func 	 = req.params.func,
 		start 	 = req.body.startTime,
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
 		esClient.search({
-                'index': index,
-                'body':{
-	                'query': {
-	                	'filtered':{
-	                		'query': {
-	                			'match': {'function_name': fun}
-	                		},
-	                		'filter': {
-	                			'range':{ 'timestamp': { 'from': start, 'to': end} }
-	                		}
-	                	}
-	                }
-                }
+	        'index': index,
+	        'body':{
+	            'query': {
+	            	'filtered':{
+	            		'query': {
+	            			'match': {'function_name': fun}
+	            		},
+	            		'filter': {
+	            			'range':{ 'timestamp': { 'from': start, 'to': end} }
+	            		}
+	            	}
+	            }
+	        }
 		}).then(function(body){
 			res.status(200).json(body.hits.hits);
-			},
+		},
 		function (error){
 			res.status(error.status).send('Nothing found');
-		});
+	});
 });
 
 // #######################################

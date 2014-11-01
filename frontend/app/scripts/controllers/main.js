@@ -10,7 +10,7 @@
 angular.module('frontendApp')
   .controller('MainCtrl', function ($scope, $http) {
     var url = 'http://localhost:5000/api/es/kodemon/';
-    //	Route: /api/es/kodemon/:project 
+    //	Route: /api/es/kodemon/:project
   	$http.get(url).success(function(data){
   		$scope.project = data;
   		console.log(data);
@@ -41,13 +41,14 @@ angular.module('frontendApp')
 
 
 	//	Route: /api/es/kodemon/:project/:function
-  
+
   	$scope.getFunctionValuesByTimerange = function(i){
   			//	Route: /api/es/kodemon/:project/:function/timerange
-		    console.log(i);
-		    $http.post('http://localhost:5000/api/ele/kodemon/func/timerange', {
+		    console.log('### getFunctionValuesByTimerange ###');
+        console.log(i);
+		    $http.post('http://localhost:5000/api/es/kodemon/func/timerange', {
 		    	startTime: $scope.startDay,
-		    	endTime: $scope.endDay, 
+		    	endTime: $scope.endDay,
 		    	fu: i.key
 		    }).success( function  (data) {
 		    	console.log('POST: /kodemon/key.py/timerange');
@@ -78,7 +79,7 @@ $scope.sDay = function() {
 $scope.eDay = function() {
     $scope.endDay = new Date();
   };
-  
+
   $scope.sDay();
   $scope.eDay();
 
