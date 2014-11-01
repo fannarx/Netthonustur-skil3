@@ -25,6 +25,10 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+        .when('/hs', {
+        templateUrl: 'views/hs.html',
+        controller: 'HsCtrl'
+      })
       .when('/:file', {
         templateUrl: 'views/file.html',
         controller: 'FileCtrl'
@@ -36,10 +40,6 @@ angular
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
-      })
-      .when('/hs', {
-        templateUrl: 'views/hs.html',
-        controller: 'HsCtrl'
       })
       .otherwise({
         redirectTo: '/'

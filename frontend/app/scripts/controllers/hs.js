@@ -42,7 +42,7 @@ angular.module('frontendApp')
 // hs end
 
 
-
+/*
     //  Route: /api/es/kodemon/:project/:function
 
     $scope.getFunctionValuesByTimerange = function(i){
@@ -60,6 +60,7 @@ angular.module('frontendApp')
                 console.log('RESP: /kodemon/key.py/timerange');
             });
     };
+*/
 
     $scope.getFunctionValues = function(i){
             //  Route: /api/es/kodemon/:project/:function/timerange
