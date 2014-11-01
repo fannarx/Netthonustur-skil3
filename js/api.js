@@ -126,6 +126,7 @@ app.get('/api/es/:index', function(req, res){
 //		project grouped by the function name.
 
 app.post('/api/es/:index/timerange', function(req, res){
+	console.log('POST: /api/es/:index/timerange, has been called');
 	var index 	= req.params.index,
 		start 	= req.body.startTime,
 		end 	= req.body.endTime;
@@ -139,10 +140,17 @@ app.post('/api/es/:index/timerange', function(req, res){
 							'to': end
 						} 
 					}
+	            },
+	            'aggs': {
+	            	'groupByFiles':{
+	            		'terms':{
+	            			'field': 'file_path'
+	            		}
+	            	}
 	            }
 	        }
 		}).then(function(body){
-			res.status(200).json(body.hits.hits);
+			res.status(200).json(body);
 		},
 		function (error){
 			res.status(error.status).send('Nothing found');

@@ -29,7 +29,7 @@ angular
         controller: 'AboutCtrl'
       })
       .when('/hs', {
-        templateUrl: 'views/main.html',
+        templateUrl: 'views/hs.html',
         controller: 'HsCtrl'
       })
       .otherwise({
