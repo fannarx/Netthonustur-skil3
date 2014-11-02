@@ -24,7 +24,7 @@ angular.module('frontendApp')
           }
          ];
 
-    var getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 100);
+    var getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 1000);
 
     $scope.getLatestKodmonData = function(){
       for (var x in functionList){

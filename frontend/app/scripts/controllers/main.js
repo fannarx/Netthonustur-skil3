@@ -8,50 +8,55 @@
  * Controller of the frontendApp
  */
 angular.module('frontendApp')
-  .controller('MainCtrl', function ($scope, $http, $interval, $filter) {
+  .controller('MainCtrl', function ($scope, $http, $interval, $filter,$routeParams) {
     var url = 'http://localhost:5000/api/es/kodemon/';
     /*	#### Pritty'fy modification ! */
 
+$scope.BarChartSeries = [];
+  
+  $scope.toggleHighCharts = function () {
+    this.chartConfig.useHighStocks = !this.chartConfig.useHighStocks;
+  };
 
+  $scope.barChartConfig = {
+    options: {
+      chart: {
+        type: 'bar'
+      },
+      plotOptions: {
+        series: {
+          stacking: ''
+        }
+      }
+    },
+    series: $scope.BarChartSeries,
+    title: {
+      text: 'All files for Kodmon project'
+    },
+    xAxis:{
+      labels:{
+        format: '# function Calls'
+      }
+    },
+    credits: {
+      enabled: true
+    },
+    loading: false,
+    size: {}
+  };
 
 
 /*	#### Pritty'fy modification ! END END END END END END END END END END */
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   	$http.get(url).success(function(data){
   		$scope.project = data;
   		console.log(data);
+  		for(var item in data){
+  			$scope.BarChartSeries.push({'data': [data[item].doc_count], 'name': data[item].key});	
+  		}
+  		
   	}).error(function(error){
   		console.log(error);
   	});

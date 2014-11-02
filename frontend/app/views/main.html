@@ -1,42 +1,32 @@
 <div class="row">
-	<div class="col-md-12">
-		<h3>Listi af öllum skrám</h3>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>File name</th>
-					<th>Function's</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="item in project">
-					<td>#</td>
-					<td ><a ng-href="#/{{item.key}}">{{item.key}}</a></td>
-					<td>{{item.doc_count}}</td>
-				</tr>
-			</tbody>
-		</table>
+	<div class="col-md-9">
+		<div class="panel panel-green">
+		    <div class="panel-heading">
+		        <i class="fa fa-bar-chart-o fa-fw"></i>All project files
+		    </div>
+		                        <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<highchart id="chart1" config="barChartConfig"></highchart>
+		    </div>
+		</div>		
 	</div>
 
-	<div class="col-md-12">
-	  <h3>Listi af öllum skrám</h3>
-	  <a ng-href="#/hs">listi af skrám eftir dags</a>
-	  <table class="table table-striped">
-	    <thead>
-	      <tr>
-	        <th>#</th>
-	        <th>File name</th>
-	        <th>Function's</th>
-	      </tr>
-	    </thead>
-	    <tbody>
-	      <tr ng-repeat="item in project">
-	        <td>#</td>
-	        <td ng-click="getAllFunctionsByFile(item.key)" >{{item.key}}</td>
-	        <td>{{item.doc_count}}</td>
-	      </tr>
-	    </tbody>
-	  </table>
+	<div class="col-md-3">
+		<div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> All Files. <p><small class="text-info">click file for detailed information</small></p>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group" ng-repeat="item in project">
+                        <a href="#/{{item.key}}" class="list-group-item">
+                            <i class="fa fa-comment fa-fw"></i> {{item.key}}
+                            <span class="pull-right text-muted small"># <em>{{item.doc_count}}</em>
+                            </span>
+                        </a>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+		</div>
 	</div>
 </div>
