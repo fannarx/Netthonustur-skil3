@@ -242,7 +242,8 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 	            			'range':{ 'timestamp': { 'from': start, 'to': end} }
 	            		}
 	            	}
-	            }
+	            },
+	            'size': 40
 	        }
 		}).then(function(body){
 			res.status(200).json(body.hits.hits);

@@ -8,7 +8,7 @@
  * Controller of the frontendApp
  */
 angular.module('frontendApp')
-  .controller('FuncCtrl', function ($scope, $http, $routeParams) {
+  .controller('FuncCtrl', function ($scope, $http, $routeParams, $interval, $filter) {
     var url = 'http://localhost:5000/api/es/kodemon/'+$routeParams.file+'/'+$routeParams.function;
     $scope.functionName = $routeParams.function;
     var executionTime = [],
@@ -26,7 +26,6 @@ angular.module('frontendApp')
   		});
 
   	$scope.getFunctionValues = function(i){
-  			//	Route: /api/es/kodemon/:project/:function/timerange
 		    $http.post('http://localhost:5000/api/es/kodemon/func', {
 		    	fu: i
 		    }).success( function  (data) {
@@ -36,16 +35,41 @@ angular.module('frontendApp')
 		    	console.log('RESP: /kodemon/key.py/timerange');
 		    });
   	};
+    
+    var sTime = new Date();
+    sTime.setDate(sTime.getDate()-3);
 
+    $filter('date')(sTime, 'yyyy-MM-dd:hh:mm:ss');
+    
+    $scope.getNew = function(){
+      console.log('calling getNew');
+      console.log(sTime);
+      console.log((new Date()));
+      $http.post('http://localhost:5000/api/es/kodemon/file/timerange', {
+          startTime: sTime,
+          endTime: new Date(), 
+          fu: $scope.functionName
+        }).success( function  (data) {
+          extractChartData(data);
+          sTime = new Date();
+          $filter('date')(sTime, 'yyyy-MM-dd:hh:mm:ss');
+        });
+    };
 
     function extractChartData(data){
         for (var i = data.length - 1; i >= 0; i--) {
           executionTime.push(data[i]._source.execution_time);
           timestamp.push(data[i]._source.timestamp);
         };
-        console.log(timestamp);
-        console.log(executionTime);
     };
+
+    $scope.$on("$destroy", function(){
+        $interval.cancel(getLatestData);
+    });
+
+var getLatestData = $interval(function() { $scope.getNew(); }, 3000);
+
+
 // ##### HIGHCHARTS EXPEREMENT
 
 
@@ -79,7 +103,7 @@ angular.module('frontendApp')
       },
       plotOptions: {
         series: {
-          stacking: 'derp'
+          stacking: 'no'
         }
       }
     },
@@ -93,19 +117,11 @@ angular.module('frontendApp')
     },
     loading: false,
     size: {}
-  }
+  };
 
   $scope.reflow = function () {
     $scope.$broadcast('highchartsng.reflow');
   };
 
-
-
-
-
-
-
-
-
-
 });
+

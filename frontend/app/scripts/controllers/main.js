@@ -8,9 +8,136 @@
  * Controller of the frontendApp
  */
 angular.module('frontendApp')
-  .controller('MainCtrl', function ($scope, $http) {
-    var url = 'http://localhost:5000/api/es/kodemon/';
-    //	Route: /api/es/kodemon/:project
+  .controller('MainCtrl', function ($scope, $http, $interval, $filter) {
+    var url = 'http://localhost:5000/api/es/kodemon/',
+    /*	#### Pritty'fy modification ! */
+    // Set all variables.
+    	sTime = new Date();
+    	sTime.setDate(sTime.getDate()-3);
+    	$filter('date')(sTime, 'yyyy-MM-dd:hh:mm:ss');
+    var	functionList = 
+    		 {
+    		 	'funny': { 'data':[0], 'updateTime': sTime },
+    		 	'mainFunction': { 'data':[0], 'updateTime': sTime } 
+    		 };
+
+    var getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 100);
+   
+    
+    $scope.getLatestKodmonData = function(){
+    	for (var x in functionList){
+    		queryApi(functionList[x], x);
+    	}
+    };
+
+    function queryApi(i, fun){
+	$http.post('http://localhost:5000/api/es/kodemon/file/timerange', {
+	          startTime: i.updateTime,
+	          endTime: new Date(), 
+	          fu: fun
+	        }).success( function  (data) {
+	          // if there is no new data, we dont need to extract and resett timer.
+	          if(data[0]){
+	          	extractChartData(data, fun);
+	          	i.updateTime = new Date();
+	          	$filter('date')(i.updateTime, 'yyyy-MM-dd:hh:mm:ss');
+	          }
+	        });
+    }
+
+
+    function extractChartData(datax,i){
+        for(var x in datax){
+        	functionList[i].data.push(datax[x]._source.execution_time);
+        }
+    }
+
+    $scope.$on('$destroy', function(){
+        $interval.cancel(getLatestData);
+    });
+
+
+
+
+// ##### HIGHCHARTS EXPEREMENT
+
+
+  $scope.chartSeries = [];
+  
+  for(var item in functionList){
+  	$scope.chartSeries.push(functionList[item]);
+  }
+
+  $scope.toggleHighCharts = function () {
+    this.chartConfig.useHighStocks = !this.chartConfig.useHighStocks;
+  };
+
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        type: 'line'
+      },
+      plotOptions: {
+        series: {
+          stacking: ''
+        }
+      }
+    },
+    series: $scope.chartSeries,
+    title: {
+      text: 'Time chart for '
+    },
+    credits: {
+      enabled: true
+    },
+    loading: false,
+    size: {}
+  };
+
+  $scope.reflow = function () {
+    $scope.$broadcast('highchartsng.reflow');
+  };
+
+
+
+
+
+
+
+/*	#### Pritty'fy modification ! END END END END END END END END END END */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   	$http.get(url).success(function(data){
   		$scope.project = data;
   		console.log(data);
