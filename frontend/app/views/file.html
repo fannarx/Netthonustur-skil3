@@ -1,54 +1,106 @@
-<div>
-	<h3>Listi af öllum föllum fyrir tiltekna skrá</h3>
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Function name</th>
-				<th>Call count</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="item in functionByFileContainer">
-				<td>#</td>
-				<td ng-click="getAllFunctionCalls(item)"><a ng-href="#/{{file}}/{{item.key}}">{{item.key}}</a></td>
-				<td>{{item.doc_count}}</td>
-			</tr>
-		</tbody>
-	</table>
+<div class="row">
+	<div class="col-md-9">
+		<div class="panel panel-default">
+		    <div class="panel-heading">
+		        <i class="fa fa-bar-chart-o fa-fw"></i>Live data feed <small>keep a close eye on your minons</small>
+		    </div>
+		                        <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<highchart id="chart1" config="chartConfig"></highchart>
+		    </div>
+		</div>		
+	</div>
+
+	<div class="col-md-3">
+		<div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> All Functions for {{file}}
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group" ng-repeat="item in functionByFileContainer">
+                        <a href="#" class="list-group-item">
+                            <i class="fa fa-comment fa-fw"></i> {{item.key}}
+                            <span class="pull-right text-muted small"><em>{{item.doc_count}}</em>
+                            </span>
+                        </a>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+		</div>
+	</div>
 </div>
 
-<div>
-	<h3>Filteraður listi af öllum keyrslum af ákveðnu falli.</h3>
-
-	<div>
-	    <div class="row">
-	    <div class="col-md-12">
-	    	<h4>Dagsetningar val</h4>
-	    	<select ng-model="selectedFunction" ng-options="item.key for item in functionByFileContainer"></select>
-	    </div>
-	        <div class="col-md-6">
-	            <h5>Byrjunar dagsetning</h5>
-	            <p class="input-group">
-	              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-	              <span class="input-group-btn">
-	                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-	              </span>
-	            </p>	
-	        </div>
-		    <div class="col-md-6">
-		    	<h5>Enda dagsetning</h5>
-		            <p class="input-group">
-		              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
-		              <span class="input-group-btn">
-		                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-		              </span>
-		            </p>
+<div class="row">
+	<div class="col-md-9">
+		<div class="panel panel-default">
+		    <div class="panel-heading">
+		        <i class="fa fa-bar-chart-o fa-fw"></i>Live data feed <small>keep a close eye on your minons</small>
 		    </div>
-	    </div>
+		                        <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<highchart id="chart2" config="chartTimeConfig"></highchart>
+		    </div>
+		</div>		
 	</div>
-	<button ng-click="getFunctionValuesByTimerange(selectedFunction)">go</button>
-	<table class="table table-striped">
+
+	<div class="col-md-3">
+		<div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> Select a function
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+	    	        <div class="col-md-12">
+	    	        	<div class="row">
+	    	        		<div class="col-md-9">
+	    	        			<select ng-model="selectedFunction" ng-options="item.key for item in functionByFileContainer" class="form-control"></select>
+		    	        	</div>
+		    	        	<div class="col-md-3">
+		    	        		<button class="btn btn-success" ng-click="getFunctionValuesByTimerange(selectedFunction)">go</button>
+	    	        		</div>
+	    	        	</div>
+	    	        </div>
+	    	        <div class="col-md-6">
+			            <p>Start date</p>
+			            <p class="input-group">
+			              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+			              <span class="input-group-btn">
+			                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+			              </span>
+			            </p>	
+	        		</div>
+				    <div class="col-md-6">
+				            <p>End date</p>
+				            <p class="input-group">
+				              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+				              <span class="input-group-btn">
+				                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+				              </span>
+				            </p>
+				    </div>
+				    <div class="col-md-12">
+				    	<h5>Selected functions</h5>
+				    	<p ng-repeat="fn in chartTimeSeries">
+				    		{{fn.name}} - {{fn.start | date:'medium'}} <a ng-click="removeTimeSeries(fn)">remove</a>
+				    	</p>
+				    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+		</div>
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading" ng-click="timeTable = !timeTable">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="row" collapse="timeTable">
+           <table class="table table-striped">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -68,5 +120,17 @@
 			</tr>
 		</tbody>
 	</table>
+	</div>
+        <!-- /.col-lg-4 (nested) -->
+                           
+                            <!-- /.col-lg-8 (nested) -->
+    </div>
+                            <!-- /.row -->
+</div>
+                        <!-- /.panel-body -->
+
+
+<div collapse="true">
+	
 
 </div>
