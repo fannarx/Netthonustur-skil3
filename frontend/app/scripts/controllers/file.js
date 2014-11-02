@@ -12,20 +12,20 @@ angular.module('frontendApp')
     /**PRETTY FEYH*/
   $scope.file = $routeParams.file;
   var url = 'http://localhost:5000/api/es/kodemon/'+ $scope.file;
-  $scope.loadingChart = true;  
+  $scope.loadingChart = true;
 // Set all variables.
     var sTime = new Date();
       sTime.setDate(sTime.getDate()-3);
       $filter('date')(sTime, 'yyyy-MM-dd:hh:mm:ss');
-    
-    var functionList = 
+
+    var functionList =
          [{
-           'item':{'function': 'nan', 'data':[0], 'updateTime': sTime } 
+           'item':{'function': 'nan', 'data':[0], 'updateTime': sTime }
           }
          ];
 
-    var getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 10000);
-    
+    var getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 100);
+
     $scope.getLatestKodmonData = function(){
       for (var x in functionList){
         console.log(functionList[x].item);
@@ -36,7 +36,7 @@ angular.module('frontendApp')
     function queryApi(item){
           $http.post('http://localhost:5000/api/es/kodemon/file/timerange', {
             startTime: item.updateTime,
-            endTime: new Date(), 
+            endTime: new Date(),
             fu: item.function
           }).success( function  (data) {
             // if there is no new data, we dont need to extract and resett timer.
@@ -68,7 +68,7 @@ angular.module('frontendApp')
 
   $scope.chartSeries = [];
   $scope.chartTimeSeries = [];
-  
+
   $scope.toggleHighCharts = function () {
     this.chartConfig.useHighStocks = !this.chartConfig.useHighStocks;
   };
@@ -133,7 +133,7 @@ angular.module('frontendApp')
   };
 
 
-    //	Route: /api/es/kodemon/:project 
+    //	Route: /api/es/kodemon/:project
   	$http.get(url).success(function (data){
         $scope.functionByFileContainer = data.aggregations.group_by_functions.buckets;
         setupFunctionList($scope.functionByFileContainer);
@@ -158,7 +158,7 @@ angular.module('frontendApp')
         //  Route: /api/es/kodemon/:project/:function/timerange
         $http.post(url+'/timerange', {
           startTime: $scope.startDay,
-          endTime: $scope.endDay, 
+          endTime: $scope.endDay,
           fu: i.key
         }).success( function  (data) {
           console.log('POST: /kodemon/key.py/timerange');
@@ -186,7 +186,7 @@ $scope.sDay = function() {
 $scope.eDay = function() {
     $scope.endDay = new Date();
   };
-  
+
   $scope.sDay();
   $scope.eDay();
 
