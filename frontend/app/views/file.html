@@ -14,16 +14,14 @@
 	<div class="col-md-3">
 		<div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> All Functions for {{file}}
+                    <img class="imagebar" src="/images/folder.png" alt=""> All Functions for {{file}}
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="list-group" ng-repeat="item in functionByFileContainer">
-                        <a href="#" class="list-group-item">
-                            <i class="fa fa-comment fa-fw"></i> {{item.key}}
-                            <span class="pull-right text-muted small"><em>{{item.doc_count}}</em>
-                            </span>
-                        </a>
+                        {{item.key}}
+                        <span class="pull-right text-info small"><em>{{item.doc_count}}</em>
+                        </span>
                 </div>
                 <!-- /.panel-body -->
             </div>
@@ -31,64 +29,72 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-md-9">
-		<div class="panel panel-green">
-		    <div class="panel-heading">
-		        <i class="fa fa-bar-chart-o fa-fw"></i>Compare functions <small>get ready for a busy weekend</small>
-		    </div>
-		                        <!-- /.panel-heading -->
-		    <div class="panel-body">
-		    	<highchart id="chart2" config="chartTimeConfig"></highchart>
-		    </div>
-		</div>		
-	</div>
 
-	<div class="col-md-3">
+<div class="row">
+	<div class="col-md-12">
 		<div class="panel panel-default">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> Select a function
+                    <img class="imagebar" src="/images/down.png" alt=""> Select a function
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
 	    	        <div class="col-md-12">
 	    	        	<div class="row">
-	    	        		<div class="col-md-9">
-	    	        			<select ng-model="selectedFunction" ng-options="item.key for item in functionByFileContainer" class="form-control"></select>
+	    	        		<div class="col-md-12">
+		    	        		<div class="col-md-3">
+		    	        			<select ng-model="selectedFunction" ng-options="item.key for item in functionByFileContainer" class="form-control"></select>
+			    	        	</div>
+			    	        	<div class="col-md-9">
+			    	        		<button class="btn btn-success" ng-click="getFunctionValuesByTimerange(selectedFunction)">go</button>
+		    	        		</div>
 		    	        	</div>
-		    	        	<div class="col-md-3">
-		    	        		<button class="btn btn-success" ng-click="getFunctionValuesByTimerange(selectedFunction)">go</button>
-	    	        		</div>
 	    	        	</div>
 	    	        </div>
 	    	        <div class="col-md-6">
-			            <p>Start date</p>
-			            <p class="input-group">
-			              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-			              <span class="input-group-btn">
-			                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-			              </span>
-			            </p>	
-	        		</div>
-				    <div class="col-md-6">
-				            <p>End date</p>
+		    	        <div class="col-md-12">
+				            Start date
 				            <p class="input-group">
-				              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+				              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 				              <span class="input-group-btn">
-				                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+				                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 				              </span>
-				            </p>
+				            </p>	
+		        		</div>
+					    <div class="col-md-12">
+					            End date
+					            <p class="input-group">
+					              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+					              <span class="input-group-btn">
+					                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+					              </span>
+					            </p>
+					    </div>
 				    </div>
-				    <div class="col-md-12">
+				    <div class="col-md-6">
 				    	<h5>Selected functions</h5>
-				    	<p ng-repeat="fn in chartTimeSeries">
-				    		{{fn.name}} - {{fn.start | date:'medium'}} <a ng-click="removeTimeSeries(fn)">remove</a>
-				    	</p>
+				    	<ul class="list-group">
+					    	<li class="list-group-item" ng-repeat="fn in chartTimeSeries">
+					    		{{fn.name}} - {{fn.start | date:'medium'}} <a ng-click="removeTimeSeries(fn)">remove</a>
+					    	</li>
+				    	</ul>
 				    </div>
                 </div>
                 <!-- /.panel-body -->
             </div>
-		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-green">
+		    <div class="panel-heading">
+		       <img class="imagebar" src="/images/eye.png" alt=""> Compare functions <small>get ready for a busy weekend</small>
+		    </div>
+		       <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<highchart id="chart2" config="chartTimeConfig"></highchart>
+		    </div>
+		</div>		
 	</div>
 </div>
 
