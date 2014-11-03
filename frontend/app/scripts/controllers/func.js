@@ -15,7 +15,33 @@ angular.module('frontendApp')
     timestamp = [],
     maxTest,
     minTest;
-
+    
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //    
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //
+    // ####                              ##### //
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // UNUSED CODE: LEFT HERE FOR LEGACY REASONS!
+    // ####                              ##### //
+    // ####                              ##### //
+    
     //	Route: /api/es/kodemon/:project 
   		$http.get(url).success(function(data){
   			$scope.functionCallsContainer = data.hits.hits;

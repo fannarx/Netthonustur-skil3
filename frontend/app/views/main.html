@@ -110,3 +110,70 @@
 		</div>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-md-9">
+		<div class="panel panel-info">
+		    <div class="panel-heading">
+		        <i class="fa fa-bar-chart-o fa-fw"></i>All function runtimes by timerange
+		    </div>
+		                        <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<div ng-repeat="file in filesByTimerange">
+		    		<div>
+		    			<h4>{{file.key}}</h4>
+		    			<table class="table table-striped">
+		    				<thead>
+		    					<tr>
+		    						<th>Function name</th>
+		    						<th>Start time</th>
+		    						<th>Execution duration</th>
+		    					</tr>
+		    				</thead>
+		    				<tbody>
+		    					<tr ng-repeat="function in file.tops.hits.hits | orderBy:'_source.timestamp'">
+		    						<td>{{function._source.function_name}}</td>
+		    						<td>{{function._source.timestamp | date:'medium'}}</td>
+		    						<td>{{function._source.execution_time |number: 5}}</td>
+		    					</tr>
+		    				</tbody>
+		    			</table>
+		    		</div>
+		    	</div>
+		    </div>
+		</div>		
+	</div>
+
+	<div class="col-md-3">
+		<div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> <p>Select date</p>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                   <div class="col-md-6">
+			            <p>Start date</p>
+			            <p class="input-group">
+			              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+			              <span class="input-group-btn">
+			                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+			              </span>
+			            </p>	
+	        		</div>
+				    <div class="col-md-6">
+				            <p>End date</p>
+				            <p class="input-group">
+				              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+				              <span class="input-group-btn">
+				                <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+				              </span>
+				            </p>
+				    </div>
+				    <div class="col-md-12">
+				    	<button class="btn btn-success" ng-click="getFilesByTimerange()">go</button>
+				    </div>
+                <!-- /.panel-body -->
+            </div>
+		</div>
+	</div>
+</div>
