@@ -1,32 +1,194 @@
 <div class="row">
-	<div class="col-md-9">
-		<div class="panel panel-green">
-		    <div class="panel-heading">
-		        <i class="fa fa-bar-chart-o fa-fw"></i>All project files
-		    </div>
-		                        <!-- /.panel-heading -->
-		    <div class="panel-body">
-		    	<highchart id="chart1" config="barChartConfig"></highchart>
-		    </div>
-		</div>		
-	</div>
-
-	<div class="col-md-3">
-		<div class="panel panel-default">
+    <div class="container-fluid">
+    	<div class="col-lg-4 col-md-6">
+            <div class="panel">
                 <div class="panel-heading">
-                    <i class="fa fa-bell fa-fw"></i> All Files. <p><small class="text-info">click file for detailed information</small></p>
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <div class="list-group" ng-repeat="item in project">
-                        <a href="#/{{item.key}}" class="list-group-item">
-                            <i class="fa fa-comment fa-fw"></i> {{item.key}}
-                            <span class="pull-right text-muted small"># <em>{{item.doc_count}}</em>
-                            </span>
-                        </a>
-                </div>
-                <!-- /.panel-body -->
+                    <div class="row">
+                        <div class="col-xs-12"><img src="/images/longruntime.jpg" alt=""></div> 
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>File</th>
+                                    <th>Function</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in highestLoadTime">
+                                    <td> {{item.key}} </td>
+                                    <td> {{item.top_time_hits.hits.hits[0]._source.function_name}} </td>
+                                    <td> {{item.top_time_hits.hits.hits[0]._source.execution_time | number:2}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">Slowest runtime for a function per file</span>
+                        <div class="clearfix"></div>
+                    </div>
             </div>
-		</div>
-	</div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-12"><img src="/images/fastruntime.jpg" alt=""></div>
+                         <div>
+                     		<table class="table">
+                     			<thead>
+                     				<tr>
+                     					<th>File</th>
+                     					<th>Function</th>
+                     					<th>Time</th>
+                     				</tr>
+                     			</thead>
+                     			<tbody>
+    	                 			<tr ng-repeat="item in lowestLoadTime">
+    	                 				<td> {{item.key}} </td>
+    	                 				<td> {{item.top_time_hits.hits.hits[0]._source.function_name}} </td>
+    	                 				<td> {{item.top_time_hits.hits.hits[0]._source.execution_time | number:4}} </td>
+    	                 			</tr>
+                     			</tbody>
+                     		</table>
+                         	</div>
+                         </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">Fastest runtime for a function per file</span>
+                        <div class="clearfix"></div>
+                    </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12">
+                         <div class="col-xs-12"><img src="/images/averageruntime.jpg" alt=""></div>
+                         </div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>File</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in averageLoadTime">
+                                    <td> {{item.key}} </td>
+                                    <td> {{item.av_time.value | number:4}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="pull-left">Average runtime for all functions per file</span>
+                        <div class="clearfix"></div>
+                    </div>
+            </div>
+        </div>
+
+    	<div class="col-md-9">
+    		<div class="panel panel-green">
+    		    <div class="panel-heading">
+    		       All project files
+    		    </div>               <!-- /.panel-heading -->
+    		    <div class="panel-body">
+    		    	<highchart id="chart1" config="barChartConfig"></highchart>
+    		    </div>
+    		</div>		
+    	</div>
+
+    	<div class="col-md-3">
+    		<div class="panel panel-default">
+                    <div class="panel-heading">
+                        <img src="/images/allfiles.png" alt="">
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="list-group" ng-repeat="item in project">
+                            <a href="#/{{item.key}}" class="list-group-item">
+                                <i class="fa fa-comment fa-fw"></i> {{item.key}}
+                                <span class="pull-right text-muted small"># <em>{{item.doc_count}}</em>
+                                </span>
+                            </a>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+    		</div>
+    	</div>
+
+
+
+    <div class="col-md-12">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <img src="/images/selectdate.png" alt="">
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                       <div class="col-md-6">
+                            Start date
+                            <p class="input-group">
+                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="startDay" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                              <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                            </p>    
+                        </div>
+                        <div class="col-md-6">
+                                End date
+                                <p class="input-group">
+                                  <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDay" is-open="openedEnd" datepicker-options="dateOptions" date-disabled="disabledEnd(date, mode)" ng-required="true" close-text="Close" />
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                  </span>
+                                </p>
+                        </div>
+                        <div class="col-md-12">
+                            <button class="btn btn-success" ng-click="getFilesByTimerange()">Go</button>
+                        </div>
+                    <!-- /.panel-body -->
+                </div>
+            </div>
+        </div>
+
+    	<div class="col-md-12">
+    		<div class="panel panel-info">
+    		    <div class="panel-heading">
+    		        <i class="fa fa-bar-chart-o fa-fw"></i>All function runtimes by timerange
+    		    </div>
+    		                        <!-- /.panel-heading -->
+    		    <div class="panel-body">
+    		    	<div ng-repeat="file in filesByTimerange">
+    		    		<div>
+    		    			<h4>{{file.key}}</h4>
+    		    			<table class="table table-striped">
+    		    				<thead>
+    		    					<tr>
+    		    						<th>Function name</th>
+    		    						<th>Start time</th>
+    		    						<th>Execution duration</th>
+    		    					</tr>
+    		    				</thead>
+    		    				<tbody>
+    		    					<tr ng-repeat="function in file.tops.hits.hits | orderBy:'_source.timestamp'">
+    		    						<td>{{function._source.function_name}}</td>
+    		    						<td>{{function._source.timestamp | date:'medium'}}</td>
+    		    						<td>{{function._source.execution_time |number: 5}}</td>
+    		    					</tr>
+    		    				</tbody>
+    		    			</table>
+    		    		</div>
+    		    	</div>
+    		    </div>
+    		</div>		
+    	</div>
+    </div>
 </div>

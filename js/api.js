@@ -79,10 +79,6 @@ app.delete('/api/kodemon/delete', function(req, res){
 // ###### Routes to database end #########
 
 
-
-
-
-
 // #######################################
 // ###### Routes to elasticSearch ########
 
@@ -93,8 +89,6 @@ app.delete('/api/kodemon/delete', function(req, res){
 	/api/es/kodemon/:project/:function/time
 	/api/es/kodemon/:project/:function/time/:range
 													*/
-
-
 
 //	Route: /api/es/:index
 //	Expected results: 	Every document related to this index.
@@ -118,49 +112,116 @@ app.get('/api/es/:index', function(req, res){
 		res.status(error.status).send('Nothing found');
 	});
 });
-
-
 //	Route: /api/es/kodemon/:project/:function
 //	Expected Results: 		
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
-
 app.post('/api/es/:index/timerange', function(req, res){
-	console.log('POST: /api/es/:index/timerange, has been called');
-	var index 	= req.params.index,
-		start 	= req.body.startTime,
-		end 	= req.body.endTime;
+	var index = req.params.index,
+		start 	 = req.body.startTime,
+		end 	 = req.body.endTime;
 		esClient.search({
 	        'index': index,
 	        'body':{
-	            'query': {
-					'range':{ 
-						'timestamp': { 
-							'from': start, 
-							'to': end
-						} 
-					}
-	            },
-	            'aggs': {
-	            	'groupByFiles':{
-	            		'terms':{
-	            			'field': 'file_path'
-	            		}
-	            	}
-	            }
-	        }
+	        	'query': {
+            	'filtered':{
+            		'filter': {
+            			'range':{ 'timestamp': { 'from': start, 'to': end} }
+            		}
+            		}
+            	},
+	        	'aggs': {
+	        		'by_file':{
+	        			'terms':{
+	        				'field': 'file_path',
+	        				'size': 0
+	        			},
+	        			'aggs':{
+	        				'tops':{
+	        					'top_hits':{
+	        						'size': 1000
+	        					}
+	        				}
+	        			}
+	        		}
+	        	}
+            }
 		}).then(function(body){
-			res.status(200).json(body);
+			res.status(200).json(body.aggregations.by_file.buckets);
 		},
 		function (error){
 			res.status(error.status).send('Nothing found');
 	});
 });
 
+//	Route: /api/es/:index
+//	Expected results: 	Check what function has the highest load time.
+app.get('/api/es/:index/loadtime/:sortBy', function(req, res){
+	var index = req.params.index,
+		sortBy = req.params.sortBy;
+	esClient.search({
+            'index': index,
+            'body': {
+            	'aggs': {
+            		'top_execution_time':{
+            			'terms':{
+            				'field': 'file_path',
+            				'size': 250
+            			},
+            			'aggs': {
+            				'top_time_hits':{
+            					'top_hits':{
+            						'sort':[
+            						{
+            							'execution_time':{
+            								'order': sortBy
+            							}
+            						}
+            						],
+            						'size': 1
+            					}
+            				}
+            			}
+            		}
+            	}
+            }
+	}).then(function(body){
+		res.status(200).json(body.aggregations.top_execution_time.buckets);
+		},
+	function (error){
+		res.status(error.status).send('Nothing found');
+	});
+});
+
+//	Route: /api/es/:index
+//	Expected results: 	Check what function has the highest load time.
+app.get('/api/es/:index/loadtime/allfiles/average', function(req, res){
+	var index = req.params.index;
+	esClient.search({
+            'index': index,
+            'body': {
+            	'aggs': {
+            		'avg_execution_time':{
+            			'terms':{
+            				'field': 'file_path',
+            				'order': {'av_time': 'asc'}
+            			},
+            			'aggs': {
+            				'av_time': {'avg': {'field': 'execution_time'}}
+            			}
+            		}
+            	}
+            }
+	}).then(function(body){
+		res.status(200).json(body.aggregations.avg_execution_time.buckets);
+		},
+	function (error){
+		res.status(error.status).send('Nothing found');
+	});
+});
 
 //	Route: /api/es/kodemon/:file 
 //	Expected results: 	Every function and how often it has been called from this file
-
 app.get('/api/es/:index/:file', function(req, res){
 		var index = req.params.index;
 		var file  = req.params.file;
@@ -194,7 +255,6 @@ app.get('/api/es/:index/:file', function(req, res){
 
 //	Route: /api/es/kodemon/:file 
 //	Expected results: 	Returns every logged call to this function.
-
 app.get('/api/es/:index/:file/:func', function(req, res){
 		var index = req.params.index;
 		var func  = req.params.func;
@@ -223,10 +283,9 @@ app.get('/api/es/:index/:file/:func', function(req, res){
 //	Expected Results: 		
 //		Every document related to this selected function from the selected
 //		project grouped by the function name.
-
-app.post('/api/es/:index/:func/timerange', function(req, res){
+app.post('/api/es/:index/:file/timerange', function(req, res){
 	var index = req.params.index,
-//		func 	 = req.params.func,
+		file 	 = req.params.file,
 		start 	 = req.body.startTime,
 		end 	 = req.body.endTime,
 		fun 	 = req.body.fu;
@@ -236,14 +295,23 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 	            'query': {
 	            	'filtered':{
 	            		'query': {
-	            			'match': {'function_name': fun}
+	            			'bool':{
+	            				'must': [
+	            				{
+	            					'term': {'file_path': file}
+	            				},
+	            				{
+	            					'term': {'function_name': fun}
+	            				}
+	            				]
+	            			}
 	            		},
 	            		'filter': {
 	            			'range':{ 'timestamp': { 'from': start, 'to': end} }
 	            		}
 	            	}
 	            },
-	            'size': 40
+	            'size': 400
 	        }
 		}).then(function(body){
 			res.status(200).json(body.hits.hits);
@@ -254,28 +322,6 @@ app.post('/api/es/:index/:func/timerange', function(req, res){
 });
 
 // #######################################
-
-
-/*
-// Route for searching - still need to implement
-app.post('/api/search', function(req, res){
-	var search_string = req.body.search || "";
-	client.search({
-		index: 'blogs',
-		body: {
-			query: {
-				match:{
-					title: search_string
-				}
-			} 
-		}
-	}, function(err, response){
-		console.log(err);
-		res.json(response);
-
-	});
-});
-*/
 
 
 // port used to comunicate - routes come to this port

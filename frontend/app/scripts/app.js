@@ -33,10 +33,6 @@ angular
         templateUrl: 'views/file.html',
         controller: 'FileCtrl'
       })
-      .when('/:file/:function', {
-        templateUrl: 'views/function.html',
-        controller: 'FuncCtrl'
-      })
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
