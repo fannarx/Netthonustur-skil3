@@ -48,6 +48,42 @@ $scope.BarChartSeries = [];
 
 /*	#### Pritty'fy modification ! END END END END END END END END END END */
 
+ 	
+ 	$http.get('http://localhost:5000/api/es/kodemon/loadtime/desc').success(function(data){
+  		$scope.highestLoadTime = data;
+  		console.log(data);
+  		}).error(function(error){
+  		console.log(error);
+  	});
+ 	
+ 	$http.get('http://localhost:5000/api/es/kodemon/loadtime/asc').success(function(data){
+  		$scope.lowestLoadTime = data;
+  		console.log(data);
+  		}).error(function(error){
+  		console.log(error);
+  	});
+
+
+
+
+$http.get('http://localhost:5000/api/es/kodemon/loadtime/allfiles/average').success(function(data){
+		console.log(data);
+		$scope.averageLoadTime = data;
+  		}).error(function(error){
+  		console.log(error);
+  	});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   	$http.get(url).success(function(data){

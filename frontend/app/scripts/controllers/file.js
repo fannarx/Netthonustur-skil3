@@ -34,7 +34,7 @@ angular.module('frontendApp')
     };
 
     function queryApi(item){
-          $http.post('http://localhost:5000/api/es/kodemon/file/timerange', {
+          $http.post(url+'/timerange', {
             startTime: item.updateTime,
             endTime: new Date(), 
             fu: item.function

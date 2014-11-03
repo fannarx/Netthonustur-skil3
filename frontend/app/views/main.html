@@ -1,4 +1,84 @@
 <div class="row">
+	<div class="col-lg-3 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                     <div ng-repeat="item in highestLoadTime">
+                     		{{item.key}}
+                     		{{item.top_time_hits.hits.hits[0]._source.function_name}}
+                     		{{item.top_time_hits.hits.hits[0]._source.execution_time | number:2}}
+                     	</div>
+                     </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Slowest runtime for a function per file</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+<div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                     <div>
+                 		<table>
+                 			<thead>
+                 				<tr>
+                 					<th>File</th>
+                 					<th>Function</th>
+                 					<th>Time</th>
+                 				</tr>
+                 			</thead>
+                 			<tbody>
+	                 			<tr ng-repeat="item in lowestLoadTime">
+	                 				<td> {{item.key}} </td>
+	                 				<td> {{item.top_time_hits.hits.hits[0]._source.function_name}} </td>
+	                 				<td> {{item.top_time_hits.hits.hits[0]._source.execution_time | number:4}} </td>
+	                 			</tr>
+                 			<tbody>
+                 		</table>
+                     	</div>
+                     </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Fastest runtime for a function per file</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                     <div ng-repeat="item in averageLoadTime">
+                     		{{item.key}}
+                     		{{item.av_time.value | number:4}}
+                     	</div>
+                     </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Average runtime for all functions per file</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</div>
+<div class="row">
 	<div class="col-md-9">
 		<div class="panel panel-green">
 		    <div class="panel-heading">
