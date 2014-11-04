@@ -10,23 +10,23 @@ def zero():
 @kodemon
 def one():
 	print("Random is 1.\n")
-	time.sleep(random.uniform(.1, .3))
+	time.sleep(random.uniform(.1, .9))
 
 
 @kodemon
 def two():
 	print("Random is 2.\n")
-	time.sleep(random.uniform(.1, .9))
+	time.sleep(random.uniform(.2, .6))
 
 @kodemon
 def three():
 	print("Random is 3.\n")
-	time.sleep(random.uniform(.5, .9))
+	time.sleep(random.uniform(.3, .9))
 
 @kodemon
 def four():
 	print("Random is 4.\n")
-	time.sleep(random.uniform(.3, .7))
+	time.sleep(random.uniform(.4, .7))
 
 @kodemon
 def five():
@@ -37,8 +37,15 @@ def five():
 
 @kodemon
 def main():
+#	zero()
+	one()
+	two()
+	three()
+	four()
+#	five()
+
 	while True:
-		n = random.randint(0, 5)
+		n = random.randint(1, 4)
 		if n == 0:
 			zero()
 		elif n == 1:
@@ -49,8 +56,8 @@ def main():
 			three()
 		elif n==4:
 			four()
-		elif n==5:
-			five()
+#		elif n==5:
+#			five()
 		time.sleep(1)
 '''
 		zero()
