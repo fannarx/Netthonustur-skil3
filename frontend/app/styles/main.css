@@ -11,13 +11,20 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 }
-
+.imagebar{
+  width: 35px;
+}
+.allfiles{
+  height: 60px;
+}
 /* Custom page header */
 .header {
   border-bottom: 1px solid #e5e5e5;
   background: #ff9933;
 }
-
+.selectdate{
+  width:90px;
+}
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
