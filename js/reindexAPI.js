@@ -84,6 +84,7 @@ app.get('/api/es/showindexes', function(req, res){
 app.delete('/api/delete/:collection', function(req, res){
 	var collection = req.params.collection;
     // Drop the collection from this world
+    console.log('collection to delete: '+ collection);
 	mongoose.connection.collections[collection].drop( function(err) {
 	    console.log('collection dropped');
 	    reindex.deleteEsIndex(collection, function(bool){

@@ -71,9 +71,8 @@ function doesIndexExist(indexToCheck, callback){
 
 /// (privat) deleting index
 function deleteEsIndex(indexToDelete, callback){
-	esClient.deleteByQuery({
-		index: indexToDelete,
-		q: ''
+	esClient.indices.delete({
+		index: 'kodemon'
 	}, function (error, response) {
 		if (error){
 			console.log('ERROR: in deleting index:' + indexToDelete);
