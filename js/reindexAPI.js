@@ -1,11 +1,13 @@
 // This API is a very simple.
-// He can build up elasticsearch index from db useing the mongoose schema
+// He builds up elasticsearch index from db 
+// useing the mongoose schema
 var express 	= require('express'),
-	kodemon 	= require('./modules').KodeMon, 
+	kodemon 	= require('./models').KodeMon, 
 	mongoose	= require('mongoose'),
 	bodyParser	= require('body-parser'),
 	elastic		= require('elasticsearch'),
 	cors		= require('cors'),
+	reindex	= require('./reindex'),
 	app			= express();
 
 // elastic search client fierd up.
@@ -33,81 +35,51 @@ connectMongo();
 
 // checks on connection if there are any clusters in mongo DB.
 mongoose.connection.on('open', function(){
-	checkIfDbIsemtpy();
+	reindex.checkIfDbIsemtpy();
 });
+
+
 
 // ### Routes beging ###
 
-// get call that creates a new ES index from 
+// Creates a new ES index from 
 // mongodb (with mongoose schema)
-app.get('/api/reindex/:kodemon', function(req, res){
-	console.log('calling api/reindex/' + kodemon);
+app.get('/api/reindex/:indexToCreate', function(req, res){
+	var indexToCreate = req.params.indexToCreate;
+	console.log('calling api/reindex/' + indexToCreate);
 	kodemon.find(function(err, searchResult){
 		if (err) {
 			res.status(503).send('Unable to find results');
 		}
 		else {
-			createNewEsIndex(searchResult);
+			reindex.createNewEsIndex(indexToCreate, searchResult);
 			res.json(searchResult);
 		}
 	});
  });
 
-// Get call that checks if db has clusters
-app.get('/api/checkes', function(req, res){
-	checkIfDbIsemtpy(function(){
-		console.log('Im instide hellu, hellu')
+
+// checks if db has collections
+app.get('/api/checkcollections', function(req, res){
+	reindex.checkIfDbIsemtpy(function(dbClustersName){
+		res.json(dbClustersName);
 	});
 });
 
+
+// returns all indexes from running eleasticSearc.
+app.get('/api/es/showindexes', function(req, res){
+	esClient.cat.indices({
+	}).then(function(body){
+			res.status(200).json(body.split('\n'));
+	},
+	function (error){
+		res.status(error.status).send('Nothing found');
+	});
+});
+
+
 // ### Routes end ###
-
-
-// ### ModuleReindex end ###
-
-// checking if database has clusters
-// throws error if database has no clusters.
-function checkIfDbIsemtpy(){
-	mongoose.connection.db.collectionNames(function(error, names) {
-		console.log('Checking if database is up and running');
-	    if (error) {
-	    	console.log('ERROR: There is a problem with the database: ');
-	    	console.log(error);
-	    	throw new Error(error);
-	    } else {
-	    	console.log('Database has following clusters: ')
-	    	console.log('Number of clusters in DB: '+ names.map(function(cname) {
-	    		console.log(cname.name);
-	      }).length);
-	    console.log('');
-	    }
-  	});
-};
-
-
-// Functon taht creates new ESindex from data.
-function createNewEsIndex(data){
-	console.log('you called createNewEsIndex');
-	console.log(data.length);
-	for (var i=0; i < data.length; i++){
-		console.log('array nr. ' + i)
-		console.log(data[i]);
-		esClient.index({
-			index: 'kodemon',
-			type: 'func',
-			id : String(data[i]._id),
-			body: data[i]
-		}, function (error, res){
-			if (error)
-				console.log(error);
-			if (res)
-				console.log("Written to ElasticSerach ");
-				console.log(res.length);
-		});
-	}
-};
-
-// ### ModuleReindex end ###
 
 var port = 5002;
 app.listen(port, function(){
