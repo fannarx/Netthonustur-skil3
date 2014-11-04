@@ -1,5 +1,5 @@
 var express 	= require('express'),
-	kodemon 	= require('./modules').KodeMon, 
+	kodemon 	= require('./models').KodeMon, 
 	mongoose 	= require('mongoose'),
 	bodyParser 	= require('body-parser'),
 	elastic 	= require('elasticsearch');

@@ -38,13 +38,6 @@ def five():
 @kodemon
 def main():
 	while True:
-		zero()
-		one()
-		two()
-		three()
-		four()
-		five()
-'''
 		n = random.randint(0, 5)
 		if n == 0:
 			zero()
@@ -58,7 +51,16 @@ def main():
 			four()
 		elif n==5:
 			five()
-		time.sleep(.5)
+		time.sleep(1)
 '''
+		zero()
+		one()
+		two()
+		three()
+		four()
+		five()
+'''
+		
+
 
 main()

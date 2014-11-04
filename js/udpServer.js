@@ -1,6 +1,6 @@
 /// requirements
 var dgram 		= require('dgram'),
-  kodeMon = require('./modules').KodeMon,
+  kodeMon = require('./models').KodeMon,
 	mongoose 	= require('mongoose');
 
 var server = dgram.createSocket("udp4");

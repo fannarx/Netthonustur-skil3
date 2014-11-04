@@ -8,9 +8,8 @@ var kodeMonSchema = new mongoose.Schema({
   token: 			{type: String},
   key: 				{type: String},
   function_name:	{type: String},
-  file_path:		{type: String}
-
-});
+  file_path:		{type: String},
+}, { collection: 'kodemon' });
 
 kodeMonSchema.post('save' , function(data){
 	console.log('Writing to elasticsearch: ')

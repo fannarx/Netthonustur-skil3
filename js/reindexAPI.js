@@ -33,6 +33,8 @@ mongoose.connection.on('disconnected', connectMongo);
 // starts the connection the first time this file is ran.	
 connectMongo();
 
+var db = mongoose.connection;
+
 // checks on connection if there are any clusters in mongo DB.
 mongoose.connection.on('open', function(){
 	reindex.checkIfDbIsemtpy();
@@ -78,6 +80,18 @@ app.get('/api/es/showindexes', function(req, res){
 	});
 });
 
+
+app.delete('/api/delete/:collection', function(req, res){
+	var collection = req.params.collection;
+    // Drop the collection from this world
+	mongoose.connection.collections[collection].drop( function(err) {
+	    console.log('collection dropped');
+	    reindex.deleteEsIndex(collection, function(bool){
+		    res.status(200).json(
+		    	{'message': 'collection dropped', 'collection' : collection});
+	    })
+	});
+});
 
 // ### Routes end ###
 

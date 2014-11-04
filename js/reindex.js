@@ -111,5 +111,6 @@ function createEsIndex(indexToCreate, data){
 
 module.exports = {
 	'checkIfDbIsemtpy': checkIfDbIsemtpy, 
-	'createNewEsIndex': createNewEsIndex
+	'createNewEsIndex': createNewEsIndex,
+	'deleteEsIndex' : deleteEsIndex
 };
