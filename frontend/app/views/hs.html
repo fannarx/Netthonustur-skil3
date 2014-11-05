@@ -36,78 +36,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in filesByDateRagnge">
+      <tr ng-repeat="item in filesByTimerange">
         <td>#</td>
-        <td >{{item.key}}</td>
+        <td >
+          <a href="#/{{item.key}}">
+            <i></i> {{item.key}}
+            <span class="pull-right text-muted small">#
+            </span>
+        </a>
+        </td>
         <td>{{item.doc_count}}</td>
       </tr>
     </tbody>
   </table>
 
 </div>
-
-
-<div>
-  <h3>Listi af öllum skrám</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>File name</th>
-        <th>Function's</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="item in project">
-        <td>#</td>
-        <td ng-click="getAllFunctionsByFile(item.key)" >{{item.key}}</td>
-        <td>{{item.doc_count}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div>
-  <h3>Listi af öllum föllum fyrir tiltekna skrá</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Function name</th>
-        <th>Call count</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="item in functionByFileContainer">
-        <td>#</td>
-        <td ng-click="getAllFunctionCalls(item)">{{item.key}}</td>
-        <td>{{item.doc_count}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div>
-  <h3>Listi af öllum keyrslutímum fyrir tiltekið fall.</h3>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nafn á skrá. (*)</th>
-        <th>Nafn á falli (*)</th>
-        <th>Byrjun keyrslu</th>
-        <th>Keyrslutími</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="item in functionCallsContainer">
-        <td>#</td>
-        <td >{{item._source.file_path}}</td>
-        <td>{{item._source.function_name}}</td>
-        <td>{{item._source.timestamp | date:'medium'}}</td>
-        <td>{{item._source.execution_time}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-

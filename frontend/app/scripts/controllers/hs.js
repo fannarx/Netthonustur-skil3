@@ -29,6 +29,7 @@ angular.module('frontendApp')
                 startTime: $scope.startDay,
                 endTime: $scope.endDay,
             }).success( function  (data) {
+                $scope.filesByTimerange = data;
                 console.log('Response form elasticsearch when POST: /kodemon/timerange');
                 console.log(data);
                 //$scope.filesByDateRagnge = data.aggregations.groupByFiles.buckets;
