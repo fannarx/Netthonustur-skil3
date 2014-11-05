@@ -2,8 +2,8 @@ var express 	= require('express'),
 	kodemon 	= require('./models').KodeMon, 
 	mongoose 	= require('mongoose'),
 	bodyParser 	= require('body-parser'),
-	elastic 	= require('elasticsearch');
- 	cors		= require('cors');
+	elastic 	= require('elasticsearch'),
+ 	cors		= require('cors'),
  	app 		= express();
 
 // elastic search client fierd up.
