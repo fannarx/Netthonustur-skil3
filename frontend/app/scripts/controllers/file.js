@@ -16,7 +16,7 @@ angular.module('frontendApp')
   $scope.chartTimeSeries = [];
   var url = 'http://localhost:5000/api/es/kodemon/'+ $scope.file,
       sTime = new Date(),
-      getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 1000),    // ## Calls the api with the interval of 1sec.
+      getLatestData = $interval(function() { $scope.getLatestKodmonData(); }, 100),    // ## Calls the api with the interval of 1sec.
       functionList = [{'item':{'function': 'nan', 'data':[0], 'updateTime': sTime } }]; // ## Sets one dummy item in to the functionList to 'hax' the
                                                                                         // ## Javascript to work with the bar data correctly.
   sTime.setDate(sTime.getDate()-3);                                                     // ## Set the time -3days from now. to get some content for the
