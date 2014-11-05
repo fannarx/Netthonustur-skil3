@@ -33,7 +33,7 @@ angular
         templateUrl: 'views/file.html',
         controller: 'FileCtrl'
       })
-      .when('/about', {
+      .when('/admin', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
