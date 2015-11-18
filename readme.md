@@ -1,3 +1,4 @@
+# Made for 'Vefþjónustur' a course in Reykjavík University 2014
 ### How to install **kodemon**
 
 
